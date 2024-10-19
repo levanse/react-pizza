@@ -103,11 +103,7 @@ const Home = () => {
       dispatch(setFilters({ ...params, sort }));
 
       isSearch.current = true;
-
-      console.log(params);
     }
-
-    console.log(111);
   }, []);
 
   // Если был первый рендер, то запрашиваем пиццы
