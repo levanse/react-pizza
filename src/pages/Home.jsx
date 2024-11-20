@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { SearchContext } from '../App';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ import {
   setCurrentPage,
   setFilters,
 } from '../redux/slices/filterSlice';
-import axios from 'axios';
+import { fetchPizzas } from '../redux/slices/pizzaSlice';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -22,10 +22,9 @@ const Home = () => {
   const { categoryId, sort, currentPage } = useSelector(
     (state) => state.filter,
   );
+  const { items, status } = useSelector((state) => state.pizza);
 
   const { searchValue } = useContext(SearchContext);
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const isSearch = useRef(false);
   const isMounted = useRef(false);
 
@@ -57,26 +56,21 @@ const Home = () => {
     <Skeleton key={index} />
   ));
 
-  const fetchPizzas = async () => {
-    setIsLoading(true);
-
+  const getPizzas = async () => {
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const sortBy = sort.sortProperty.replace('-', '');
     const order = sort.sortProperty.includes('-') ? 'asc' : 'desc';
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    try {
-      const res = await axios.get(
-        `https://6696c8b10312447373c3b593.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-      );
-
-      setItems(res.data);
-    } catch (error) {
-      console.error(error);
-      alert('Ошибка при получении пицц');
-    } finally {
-      setIsLoading(false);
-    }
+    dispatch(
+      fetchPizzas({
+        category,
+        sortBy,
+        order,
+        search,
+        currentPage,
+      }),
+    );
 
     window.scrollTo(0, 0);
   };
@@ -115,11 +109,11 @@ const Home = () => {
   // Если был первый рендер, то запрашиваем пиццы
 
   useEffect(() => {
-    if (!isSearch.current) {
-      fetchPizzas();
-    }
+    // if (!isSearch.current) {
+    getPizzas();
+    // }
 
-    isSearch.current = false;
+    // isSearch.current = false;
   }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
   return (
@@ -129,7 +123,18 @@ const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">{isLoading ? skeletons : pizzas}</div>
+      {status === 'error' ? (
+        <div className="content__error-info">
+          <h2>
+            Произошла ошибка <span>😕</span>
+          </h2>
+          <p>К сожалению, не удалось получить пиццы</p>
+        </div>
+      ) : (
+        <div className="content__items">
+          {status === 'loading' ? skeletons : pizzas}
+        </div>
+      )}
       <Pagination currentPage={currentPage} onChangePage={onChangePage} />
     </div>
   );
