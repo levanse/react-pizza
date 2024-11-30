@@ -10,19 +10,18 @@ import { Skeleton } from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  selectFilter,
   setCategoryId,
   setCurrentPage,
   setFilters,
 } from '../redux/slices/filterSlice';
-import { fetchPizzas } from '../redux/slices/pizzaSlice';
+import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice';
 
 const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { categoryId, sort, currentPage } = useSelector(
-    (state) => state.filter,
-  );
-  const { items, status } = useSelector((state) => state.pizza);
+  const { categoryId, sort, currentPage } = useSelector(selectFilter);
+  const { items, status } = useSelector(selectPizzaData);
 
   const { searchValue } = useContext(SearchContext);
   const isSearch = useRef(false);
@@ -35,20 +34,6 @@ const Home = () => {
   const onChangePage = (number) => {
     dispatch(setCurrentPage(number));
   };
-
-  /* ------------------------------- filter in frontend ------------------------------- */
-
-  // const pizzasFront = items
-  //   .filter((obj) => {
-  //     if (obj.title.toLowerCase().includes(searchValue.toLowerCase())) {
-  //       return true;
-  //     }
-  //
-  //     return false;
-  //   })
-  //   .map((obj) => <PizzaBlock key={obj.id} {...obj} />);
-
-  /* ------------------------------- end filter in frontend ------------------------------- */
 
   const pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
 
