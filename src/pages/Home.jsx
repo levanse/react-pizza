@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { SearchContext } from '../App';
+import React, { useEffect, useRef } from 'react';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,10 +19,10 @@ import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice';
 const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { categoryId, sort, currentPage } = useSelector(selectFilter);
+  const { categoryId, sort, currentPage, searchValue } =
+    useSelector(selectFilter);
   const { items, status } = useSelector(selectPizzaData);
 
-  const { searchValue } = useContext(SearchContext);
   const isSearch = useRef(false);
   const isMounted = useRef(false);
 
