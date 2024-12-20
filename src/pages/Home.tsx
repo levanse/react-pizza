@@ -7,7 +7,7 @@ import Sort, { sortList } from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import { Skeleton } from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   selectFilter,
   setCategoryId,
@@ -15,10 +15,11 @@ import {
   setFilters,
 } from '../redux/slices/filterSlice';
 import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice';
+import { useAppDispatch } from '../redux/store';
 
-const Home = () => {
+const Home: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { categoryId, sort, currentPage, searchValue } =
     useSelector(selectFilter);
   const { items, status } = useSelector(selectPizzaData);
@@ -26,12 +27,12 @@ const Home = () => {
   const isSearch = useRef(false);
   const isMounted = useRef(false);
 
-  const onChangeCategory = (id) => {
+  const onChangeCategory = (id: number) => {
     dispatch(setCategoryId(id));
   };
 
-  const onChangePage = (number) => {
-    dispatch(setCurrentPage(number));
+  const onChangePage = (value: number) => {
+    dispatch(setCurrentPage(value));
   };
 
   const pizzas = items.map((obj) => (
@@ -56,7 +57,7 @@ const Home = () => {
         sortBy,
         order,
         search,
-        currentPage,
+        currentPage: String(currentPage),
       }),
     );
 
@@ -84,11 +85,16 @@ const Home = () => {
   useEffect(() => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1));
-      const sort = sortList.find(
-        (obj) => obj.sortProperty === params.sortProperty,
-      );
+      const sort = sortList.find((obj) => obj.sortProperty === params.sortBy);
 
-      dispatch(setFilters({ ...params, sort }));
+      dispatch(
+        setFilters({
+          searchValue: String(params.search),
+          categoryId: Number(params.category),
+          currentPage: Number(params.currentPage),
+          sort: sort || sortList[0],
+        }),
+      );
 
       isSearch.current = true;
     }
