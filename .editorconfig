@@ -17,6 +17,9 @@ quote_type = single
 [*.jsx]
 quote_type = single
 
+[*.tsx]
+quote_type = single
+
 [*.md]
 max_line_length = off
 trim_trailing_whitespace = false
