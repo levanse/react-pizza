@@ -1,10 +1,10 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Sort as SortData, SortProperty } from '../redux/filter/types';
+import { Sort as SortType, SortProperty } from '../redux/filter/types';
 import { setSort } from '../redux/filter/slice';
 
 type SortProps = {
-  value: SortData;
+  value: SortType;
 };
 
 type SortItem = {
@@ -21,7 +21,7 @@ export const sortList: SortItem[] = [
   { name: 'алфавиту (ASC)', sortProperty: SortProperty.TITLE_ASC },
 ];
 
-const Sort: React.FC<SortProps> = memo(({ value }) => {
+export const Sort: React.FC<SortProps> = memo(({ value }) => {
   const dispatch = useDispatch();
   const sortRef = useRef<HTMLDivElement>(null);
 
@@ -82,5 +82,3 @@ const Sort: React.FC<SortProps> = memo(({ value }) => {
     </div>
   );
 });
-
-export default Sort;

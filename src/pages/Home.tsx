@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
-
-import Categories from '../components/Categories';
-import Sort, { sortList } from '../components/Sort';
-import PizzaBlock from '../components/PizzaBlock';
-import { Skeleton } from '../components/PizzaBlock/Skeleton';
-import Pagination from '../components/Pagination';
+import { sortList } from '../components';
+import {
+  Categories,
+  Pagination,
+  Skeleton,
+  Sort,
+  PizzaBlock,
+} from '../components';
 import { useSelector } from 'react-redux';
 import {
   setCategoryId,

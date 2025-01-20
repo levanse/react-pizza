@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
-
 import styles from './Pagination.module.scss';
 
 type PaginationProps = {
@@ -8,7 +7,7 @@ type PaginationProps = {
   onChangePage: (page: number) => void;
 };
 
-const Pagination: React.FC<PaginationProps> = ({
+export const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   onChangePage,
 }) => (
@@ -23,5 +22,3 @@ const Pagination: React.FC<PaginationProps> = ({
     forcePage={currentPage - 1}
   />
 );
-
-export default Pagination;
